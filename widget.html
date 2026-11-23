@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f4f5f9, #0e1014);
+    --surface: light-dark(#ffffff, #171a21);
+    --surface-2: light-dark(#f7f8fc, #1e222b);
+    --border: light-dark(#e6e8f0, #2a2f3a);
+    --text: light-dark(#1f2430, #e8eaf0);
+    --text-2: light-dark(#6b7280, #9ca3b5);
+    --accent: light-dark(#5b5bd6, #8b8bf0);
+    --accent-soft: light-dark(#ececfb, #262653);
+    --green: light-dark(#2fa36b, #34d399);
+    --red: light-dark(#d9534f, #f87171);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px;
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5;
+  }
+  .head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .logo {
+    width: 34px; height: 34px; border-radius: 10px; flex: none;
+    background: var(--accent); color: #fff; font-size: 18px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .head h2 { margin: 0; font-size: 15px; font-weight: 650; }
+  .head .sub { color: var(--text-2); font-size: 11px; margin-top: 1px; }
+  .spacer { flex: 1; }
+  .live { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 5px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 8px; flex: none;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+  .icon-btn:hover { color: var(--text); }
+
+  .progress {
+    background: linear-gradient(135deg, var(--accent), #7c6cf0); color: #fff;
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px;
+  }
+  .progress .row { display: flex; align-items: baseline; justify-content: space-between; }
+  .progress .k { font-size: 11px; opacity: .85; }
+  .progress .v { font-size: 17px; font-weight: 700; }
+  .bar { height: 6px; border-radius: 99px; background: rgba(255,255,255,.3); margin-top: 10px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: #fff; width: 0; border-radius: 99px; transition: width .3s; }
+
+  .composer { display: flex; gap: 8px; margin-bottom: 6px; }
+  .composer input {
+    flex: 1; min-width: 0; height: 36px; padding: 0 12px; border-radius: 9px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; outline: none;
+  }
+  .composer input:focus { border-color: var(--accent); }
+  .composer button {
+    height: 36px; padding: 0 16px; border-radius: 9px; border: 0;
+    background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+  }
+  .err { color: var(--red); font-size: 11px; min-height: 15px; margin: 0 0 6px; }
+
+  .toolbar { display: flex; align-items: center; gap: 6px; margin: 8px 0 10px; }
+  .filters { display: flex; gap: 3px; background: var(--surface-2); border-radius: 9px; padding: 3px; }
+  .filter { border: 0; background: transparent; color: var(--text-2); padding: 6px 11px; border-radius: 7px; font: inherit; font-size: 12px; cursor: pointer; }
+  .filter.active { background: var(--surface); color: var(--accent); font-weight: 600; }
+  .clear { margin-left: auto; border: 0; background: transparent; color: var(--text-2); font: inherit; font-size: 12px; cursor: pointer; }
+  .clear:hover { color: var(--red); }
+
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .item {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .check {
+    width: 21px; height: 21px; border-radius: 6px; flex: none;
+    border: 2px solid light-dark(#c9ccd8, #495061); background: transparent;
+    display: grid; place-items: center; color: #fff; font-size: 12px; cursor: pointer; padding: 0;
+  }
+  .item.done .check { background: var(--green); border-color: var(--green); }
+  .text { flex: 1; min-width: 0; word-break: break-word; }
+  .item.done .text { color: var(--text-2); text-decoration: line-through; }
+  .del { border: 0; background: transparent; color: light-dark(#b9bdc9, #5a6270); font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
+  .del:hover { color: var(--red); background: light-dark(#fdeeee, #3a1f1f); }
+  .empty { text-align: center; color: var(--text-2); padding: 30px 10px; font-size: 12px; }
+  .empty .ico { font-size: 30px; margin-bottom: 6px; }
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #22242c; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 12px;
+    opacity: 0; pointer-events: none; transition: .25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="logo">✓</div>
+    <div>
+      <h2>今日待办</h2>
+      <div class="sub">WorkBuddy 账号 · 本地 MCP</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="live"><span class="dot"></span><span id="liveText">连接中…</span></div>
+    <button class="icon-btn" id="refreshBtn" title="刷新" aria-label="刷新">↻</button>
+  </div>
+
+  <div class="progress">
+    <div class="row"><span class="k">今日进度</span><span class="v" id="remaining">0 项待完成</span></div>
+    <div class="bar"><i id="fill"></i></div>
+  </div>
+
+  <form class="composer" id="form">
+    <input id="input" type="text" placeholder="添加一件今天要做的事…" maxlength="120" autocomplete="off" />
+    <button type="submit">添加</button>
+  </form>
+  <p class="err" id="err"></p>
+
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <button class="filter active" data-f="all">全部</button>
+      <button class="filter" data-f="active">待完成</button>
+      <button class="filter" data-f="done">已完成</button>
+    </div>
+    <button class="clear" id="clearDone">清除已完成</button>
+  </div>
+
+  <div class="list" id="list"></div>
+  <div class="empty" id="empty" hidden><div class="ico">☀</div><div id="emptyText">还没有待办，添加第一件事吧</div></div>
+  <div class="toast" id="toast"></div>
+
+<script type="module">
+  const $ = id => document.getElementById(id);
+  const state = { todos: [], filter: 'all', app: null, connected: false };
+  let toastTimer;
+  // MCP Server 读取资源时会把 todos.json 当前快照注入到这里；独立预览时为 null
+  const INITIAL = /*__INITIAL_DATA__*/null;
+  const DEMO = { todos: [], remaining: 0, done: 0 };
+
+  function toast(msg) {
+    const el = $('toast'); el.textContent = msg; el.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+  }
+
+  function extractData(res) {
+    if (!res) return null;
+    // 兼容直接 structuredContent、result 包裹、以及 JSON 字符串几种形态
+    const candidates = [
+      res?.structuredContent,
+      res?.result?.structuredContent,
+      res?.result,
+      res,
+    ];
+    for (const c of candidates) {
+      if (!c) continue;
+      let obj = c;
+      if (typeof obj === 'string') { try { obj = JSON.parse(obj); } catch (_) { continue; } }
+      if (obj && Array.isArray(obj.todos)) return obj;
+    }
+    return null;
+  }
+
+  function setData(data) {
+    const obj = extractData(data);
+    if (!obj) return;
+    state.todos = obj.todos;
+    render();
+  }
+
+  function render() {
+    const all = state.todos;
+    const remaining = all.filter(t => !t.done).length;
+    const done = all.length - remaining;
+    $('remaining').textContent = remaining + ' 项待完成';
+    $('fill').style.width = (all.length ? Math.round(done / all.length * 100) : 0) + '%';
+
+    const visible = all.filter(t => state.filter === 'all' || (state.filter === 'active' ? !t.done : t.done));
+    const list = $('list'); list.innerHTML = '';
+    visible.forEach(t => {
+      const row = document.createElement('div');
+      row.className = 'item' + (t.done ? ' done' : '');
+      const check = document.createElement('button');
+      check.className = 'check'; check.textContent = t.done ? '✓' : '';
+      check.setAttribute('aria-label', t.done ? '标记为未完成' : '标记为已完成');
+      check.onclick = () => call('toggle_todo', { id: t.id, done: !t.done });
+      const text = document.createElement('span'); text.className = 'text'; text.textContent = t.text;
+      const del = document.createElement('button'); del.className = 'del'; del.textContent = '×';
+      del.setAttribute('aria-label', '删除：' + t.text);
+      del.onclick = () => call('delete_todo', { id: t.id });
+      row.append(check, text, del); list.appendChild(row);
+    });
+
+    const empty = $('empty'); empty.hidden = visible.length !== 0;
+    if (visible.length === 0) {
+      $('emptyText').textContent = all.length === 0 ? '还没有待办，添加第一件事吧'
+        : state.filter === 'active' ? '太棒了，没有待完成的任务' : '还没有已完成的任务';
+    }
+  }
+
+  async function call(name, args) {
+    if (!state.connected) {
+      // 预览模式：本地演示交互
+      if (name === 'add_todo') {
+        const v = (args.text || '').trim();
+        if (!v) { $('err').textContent = '任务内容不能为空'; return; }
+        state.todos.unshift({ id: 'demo_' + Date.now(), text: v, done: false, createdAt: Date.now() });
+      } else if (name === 'toggle_todo') {
+        const it = state.todos.find(t => t.id === args.id); if (it) it.done = !!args.done;
+      } else if (name === 'delete_todo') {
+        state.todos = state.todos.filter(t => t.id !== args.id);
+      } else if (name === 'clear_done_todos') {
+        state.todos = state.todos.filter(t => !t.done);
+      }
+      $('err').textContent = ''; render(); return;
+    }
+    try {
+      const res = await state.app.callServerTool({ name, arguments: args });
+      const data = extractData(res);
+      if (res?.isError) { $('err').textContent = (data && data.error) || '操作失败'; return; }
+      $('err').textContent = '';
+      if (data) setData(data);
+    } catch (e) { toast('操作失败：' + (e?.message || e)); }
+  }
+
+  $('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = $('input').value.trim();
+    if (!v) { $('err').textContent = '任务内容不能为空'; $('input').focus(); return; }
+    $('input').value = '';
+    call('add_todo', { text: v });
+  });
+  $('input').addEventListener('input', () => { $('err').textContent = ''; });
+  $('filters').addEventListener('click', e => {
+    const b = e.target.closest('[data-f]'); if (!b) return;
+    state.filter = b.dataset.f;
+    document.querySelectorAll('.filter').forEach(x => x.classList.toggle('active', x === b));
+    render();
+  });
+  $('clearDone').addEventListener('click', () => call('clear_done_todos', {}));
+  $('refreshBtn').addEventListener('click', () => call('show_todo_board', {}));
+
+  setData(INITIAL || DEMO);
+
+  try {
+    const { App } = await import('https://esm.sh/@modelcontextprotocol/ext-apps@1');
+    const app = new App({ autoResize: true });
+    await app.connect();
+    state.app = app; state.connected = true;
+    $('liveText').textContent = '实时数据 · 已连接';
+    app.ontoolresult = result => {
+      const data = extractData(result);
+      if (data) setData(data);
+    };
+    // 主动拉一次最新数据，覆盖注入快照（调用失败时保留快照，不会变空）
+    await call('show_todo_board', {});
+  } catch (e) {
+    $('liveText').textContent = INITIAL ? '快照模式' : '预览模式 · 内置数据';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "clients": {
+    "119f36c8-b34e-4d4c-a310-9f12b4652db7": {
+      "redirect_uris": [
+        "http://127.0.0.1:3100/oauth/callback"
+      ],
+      "token_endpoint_auth_method": "none",
+      "grant_types": [
+        "authorization_code",
+        "refresh_token"
+      ],
+      "response_types": [
+        "code"
+      ],
+      "client_name": "daily-todo-test-alice",
+      "scope": "mcp:tools todo.read todo.write",
+      "client_id": "119f36c8-b34e-4d4c-a310-9f12b4652db7",
+      "client_id_issued_at": 1795422566
+    },
+    "baf6870c-1e4b-41fa-97b2-4dd1ea24b4a0": {
+      "redirect_uris": [
+        "http://127.0.0.1:3100/oauth/callback"
+      ],
+      "token_endpoint_auth_method": "none",
+      "grant_types": [
+        "authorization_code",
+        "refresh_token"
+      ],
+      "response_types": [
+        "code"
+      ],
+      "client_name": "daily-todo-test-bob",
+      "scope": "mcp:tools todo.read todo.write",
+      "client_id": "baf6870c-1e4b-41fa-97b2-4dd1ea24b4a0",
+      "client_id_issued_at": 1795422566
+    }
+  },
+  "codes": {},
+  "tokens": {
+    "4aa3838d0e334912a73506aee11cf8b2": {
+      "clientId": "119f36c8-b34e-4d4c-a310-9f12b4652db7",
+      "userId": "alice",
+      "scopes": [
+        "mcp:tools",
+        "todo.read",
+        "todo.write"
+      ],
+      "resource": "http://127.0.0.1:3100/mcp",
+      "expiresAt": 1796027366153
+    },
+    "8bc7f12940854f2ba948aee474d6bb86": {
+      "clientId": "baf6870c-1e4b-41fa-97b2-4dd1ea24b4a0",
+      "userId": "bob",
+      "scopes": [
+        "mcp:tools",
+        "todo.read",
+        "todo.write"
+      ],
+      "resource": "http://127.0.0.1:3100/mcp",
+      "expiresAt": 1796027366344
+    }
+  },
+  "refresh": {
+    "7c53bcd5af364d42a3f8ab72c62b41c9": {
+      "clientId": "119f36c8-b34e-4d4c-a310-9f12b4652db7",
+      "userId": "alice",
+      "scopes": [
+        "mcp:tools",
+        "todo.read",
+        "todo.write"
+      ],
+      "resource": "http://127.0.0.1:3100/mcp"
+    },
+    "122fbc72a6d54c2e82235dc5ede57b67": {
+      "clientId": "baf6870c-1e4b-41fa-97b2-4dd1ea24b4a0",
+      "userId": "bob",
+      "scopes": [
+        "mcp:tools",
+        "todo.read",
+        "todo.write"
+      ],
+      "resource": "http://127.0.0.1:3100/mcp"
+    }
+  }
+}

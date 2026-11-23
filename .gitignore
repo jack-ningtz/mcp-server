@@ -1,0 +1,6 @@
+node_modules/
+data/
+.oauth-state.json
+.oauth-test-state.json
+*.tmp
+.DS_Store
